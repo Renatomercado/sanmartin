@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel Admin - Club San Martín</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <span>Síguenos:</span>
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-youtube"></i></a>
+  </div>
+
+   <!-- Header -->
+   <div class="header">
+    <img src="logo.png" alt="Escudo Club San Martín" />
+    <div class="nav-buttons">
+      <a href="index.html">Inicio</a>
+      <a href="noticias.html">Noticias</a>
+      <a href="entrenamientos.html">Calendario</a>
+      <a href="categorias.html">Categorías</a>
+      <a href="galeria.html">Galería de Fotos</a>
+      <a href="admin.html">admin</a>
+      
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <main>
+    <h1>Panel de Administración</h1>
+
+    <!-- Login -->
+    <div id="login-section" class="login-box">
+      <h2>Iniciar sesión</h2>
+      <input type="email" id="email" placeholder="Correo electrónico" />
+      <input type="password" id="password" placeholder="Contraseña" />
+      <button id="login-btn">Ingresar</button>
+      <p id="login-error" class="error-text"></p>
+    </div>
+
+    <!-- Calendario -->
+    <div id="calendar-section" style="display: none;">
+      <button id="logout-btn">Cerrar sesión</button>
+      <h2 id="calendar-title"></h2>
+      <div class="calendar-grid" id="calendar"></div>
+    </div>
+  </main>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    import {
+      getDatabase,
+      ref,
+      get,
+      set
+    } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDUu7x1J9QAO9RwgDvxGiDzuqB4FpZKiU",
+      authDomain: "sanmartin-club.firebaseapp.com",
+      databaseURL: "https://sanmartin-club-default-rtdb.firebaseio.com",
+      projectId: "sanmartin-club",
+      storageBucket: "sanmartin-club.appspot.com",
+      messagingSenderId: "586707012593",
+      appId: "1:586707012593:web:de8c4821ad0bfcfe0a5250",
+      measurementId: "G-D0C35DW6TD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const loginSection = document.getElementById("login-section");
+    const calendarSection = document.getElementById("calendar-section");
+    const loginBtn = document.getElementById("login-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    loginBtn.addEventListener("click", () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      signInWithEmailAndPassword(auth, email, password)
+        .catch(() => {
+          document.getElementById("login-error").textContent = "Credenciales inválidas.";
+        });
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth);
+    });
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        loginSection.style.display = "none";
+        calendarSection.style.display = "block";
+        renderEditableCalendar();
+      } else {
+        loginSection.style.display = "block";
+        calendarSection.style.display = "none";
+      }
+    });
+
+    async function renderEditableCalendar() {
+      const calendarDiv = document.getElementById("calendar");
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const monthNames = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+      ];
+      const dayNames = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const firstDay = new Date(year, month, 1).getDay();
+
+      const snapshot = await get(ref(db, `entrenamientos/${year}/${month}`));
+      const data = snapshot.exists() ? snapshot.val() : {};
+
+      document.getElementById("calendar-title").textContent = `${monthNames[month]} ${year}`;
+
+      let html = "";
+      dayNames.forEach(d => html += `<div class="day-name">${d}</div>`);
+      for (let i = 0; i < firstDay; i++) html += `<div class="empty"></div>`;
+
+      for (let i = 1; i <= daysInMonth; i++) {
+        const texto = data[i] || "";
+        html += `<div class="day">${i}
+          <textarea data-day="${i}">${texto}</textarea>
+        </div>`;
+      }
+
+      calendarDiv.innerHTML = html;
+
+      document.querySelectorAll("textarea").forEach(area => {
+        area.addEventListener("input", () => {
+          const day = area.getAttribute("data-day");
+          set(ref(db, `entrenamientos/${year}/${month}/${day}`), area.value);
+        });
+      });
+    }
+  </script>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2025 Natodev. Todos los derechos reservados.</p>
+      <p>Contacta con nosotros: <a href="mailto:natodevelop@gmail.com">natodevelop@gmail.com</a></p>
+    </div>
+  </footer>
+</body>
+</html>

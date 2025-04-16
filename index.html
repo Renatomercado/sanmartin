@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>San Martín Vóley</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script defer>
+    let currentSlide = 0;
+    let autoSlideInterval;
+
+    function moveSlide(step) {
+      const slides = document.querySelectorAll('.carousel-item');
+      const totalSlides = slides.length;
+      currentSlide += step;
+
+      if (currentSlide < 0) currentSlide = totalSlides - 1;
+      else if (currentSlide >= totalSlides) currentSlide = 0;
+
+      updateCarousel();
+    }
+
+    function updateCarousel() {
+      const offset = -currentSlide * 100;
+      document.querySelector('.carousel-inner').style.transform = `translateX(${offset}%)`;
+    }
+
+    function autoSlide() {
+      autoSlideInterval = setInterval(() => moveSlide(1), 5000);
+    }
+
+    window.onload = () => {
+      updateCarousel();
+      autoSlide();
+    };
+  </script>
+</head>
+<body>
+  <!-- Topbar -->
+  <div class="topbar">
+    <span>Síguenos:</span>
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-youtube"></i></a>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <img src="logo.png" alt="Escudo San Martín" />
+    <nav class="nav-buttons">
+      <a href="index.html">Inicio</a>
+      <a href="noticias.html">Noticias</a>
+      <a href="calendario.html">Calendario</a>
+      <a href="categorias.html">Categorías</a>
+      <a href="galeria.html">Galería</a>
+      <a href="admin.html">admin</a>
+    </nav>
+  </header>
+
+  <!-- Carrusel -->
+  <div class="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item">
+        <img src="ca11.jpg" alt="Imagen 1">
+      </div>
+      <div class="carousel-item">
+        <img src="linam12.jpg" alt="Imagen 2">
+      </div>
+      <div class="carousel-item">
+        <img src="1.jpg" alt="Imagen 3">
+      </div>
+    </div>
+    <!-- Botones de control -->
+    <button class="carousel-control prev" onclick="moveSlide(-1)">&#10094;</button>
+    <button class="carousel-control next" onclick="moveSlide(1)">&#10095;</button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2025 San Martín Vóley - Todos los derechos reservados</p>
+    <p>Diseñado por <strong>natodev</strong> | 📧 natodevelop@gmail.com</p>
+  </footer>
+
+  <!-- Font Awesome para íconos sociales -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

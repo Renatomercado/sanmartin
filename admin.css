@@ -1,0 +1,103 @@
+main {
+    padding: 30px;
+    text-align: center;
+  }
+  
+  #login-section {
+    background: white;
+    padding: 30px;
+    max-width: 350px;
+    margin: 40px auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  #login-section h2 {
+    margin-bottom: 15px;
+    color: #003366;
+  }
+  
+  input, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 16px;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  #calendar-section {
+    display: none;
+    margin-top: 40px;
+  }
+  
+  #logout-btn {
+    float: right;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 20px;
+  }
+  
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .day-name {
+    font-weight: bold;
+    background: #cce5ff;
+    padding: 10px 0;
+    border-radius: 8px;
+  }
+  
+  .day, .empty {
+    background-color: #f0f8ff;
+    border-radius: 10px;
+    padding: 8px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 14px;
+  }
+  
+  .day textarea {
+    width: 100%;
+    margin-top: 5px;
+    resize: none;
+    height: 60px;
+    border: none;
+    border-radius: 6px;
+    padding: 5px;
+    font-family: inherit;
+  }
+
+  .day.entrenamiento {
+    background-color: #d0f0c0; /* verde suave */
+  }
+  
+  .day.evento {
+    background-color: #ffd1d1; /* rosado */
+  }
