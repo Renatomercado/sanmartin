@@ -4,106 +4,117 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Club San Martín - Vóley</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="admin.css" />
+  
 </head>
-
 <body>
+
   <!-- Topbar -->
- <div class="topbar">
+  <div class="topbar">
     <span>Síguenos:</span>
-    <a href="https://www.instagram.com/sanmartinquillota/"><i class="fab fa-instagram"></i></a>
-    <a href="https://www.facebook.com/cdsanmartinquillota/?locale=es_LA"><i class="fab fa-facebook-f"></i></a>
-    <a href="https://www.youtube.com/@ClubSanMartinVoleibolQuillota"><i class="fab fa-youtube"></i></a>
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-youtube"></i></a>
   </div>
 
-  <!-- Header -->
   <!-- Header -->
   <div class="header">
     <img src="logo.png" alt="Escudo Club San Martín" />
     <div class="nav-buttons">
       <a href="index.html">Inicio</a>
+      <a href="club.html">Club</a>
       <a href="noticias.html">Noticias</a>
       <a href="entrenamientos.html">Calendario</a>
       <a href="categorias.html">Categorías</a>
       <a href="galeria.html">Galería</a>
       <a href="admin.html">admin</a>
-      
     </div>
   </div>
 
-  <!-- Contenido Entrenamientos -->
+  <!-- Contenido -->
   <main style="padding: 30px; text-align: center;">
     <h1>ENTRENAMIENTOS Y PARTIDOS</h1>
     <div id="calendar"></div>
   </main>
 
-  <!-- Firebase SDKs -->
-<script type="module">
+  <!-- Firebase y Lógica de Calendario -->
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
-  
+
     const firebaseConfig = {
-  apiKey: "AIzaSyDDUu7x1J9QAO9RwgDvxGiDzuqB4FpZKiU",
-  authDomain: "sanmartin-club.firebaseapp.com",
-  databaseURL: "https://sanmartin-club-default-rtdb.firebaseio.com",
-  projectId: "sanmartin-club",
-  storageBucket: "sanmartin-club.firebasestorage.app",
-  messagingSenderId: "586707012593",
-  appId: "1:586707012593:web:de8c4821ad0bfcfe0a5250",
-  measurementId: "G-D0C35DW6TD"
-};
+      apiKey: "AIzaSyDDUu7x1J9QAO9RwgDvxGiDzuqB4FpZKiU",
+      authDomain: "sanmartin-club.firebaseapp.com",
+      databaseURL: "https://sanmartin-club-default-rtdb.firebaseio.com",
+      projectId: "sanmartin-club",
+      storageBucket: "sanmartin-club.appspot.com",
+      messagingSenderId: "586707012593",
+      appId: "1:586707012593:web:de8c4821ad0bfcfe0a5250",
+      measurementId: "G-D0C35DW6TD"
+    };
+
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-  
+
     const calendar = document.getElementById("calendar");
     const date = new Date();
     const year = date.getFullYear();
     const month = date.getMonth();
-  
+
     const monthNames = [
       "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
       "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
+    const dayNames = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const firstDay = new Date(year, month, 1).getDay();
-  
-    const dayNames = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
-  
+
     async function renderCalendar() {
       const snapshot = await get(ref(db, `entrenamientos/${year}/${month}`));
       const data = snapshot.exists() ? snapshot.val() : {};
-  
+
       let calendarHTML = `<h2>${monthNames[month]} ${year}</h2><div class="calendar-grid">`;
-  
+
       dayNames.forEach(day => {
         calendarHTML += `<div class="day-name">${day}</div>`;
       });
-  
+
       for (let i = 0; i < firstDay; i++) {
         calendarHTML += `<div class="empty"></div>`;
       }
-  
+
       for (let i = 1; i <= daysInMonth; i++) {
         const texto = data[i] || "";
+        const currentDate = new Date();
+        const isToday = currentDate.getDate() === i && currentDate.getMonth() === month && currentDate.getFullYear() === year;
+        const hasPassed = new Date(year, month, i) < new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+
+        let dayClass = "day";
+        if (isToday) {
+          dayClass += " today";
+        } else if (hasPassed) {
+          dayClass += " past";
+        }
+
         calendarHTML += `
-          <div class="day">${i}
+          <div class="${dayClass}">${i}
             <div style="margin-top: 5px; font-size: 13px; color: #333;">
               ${texto}
             </div>
           </div>`;
       }
-  
+
       calendarHTML += `</div>`;
       calendar.innerHTML = calendarHTML;
     }
-  
+
     renderCalendar();
   </script>
 
-    <!-- Footer -->
-<footer class="footer">
+  <!-- Footer -->
+  <footer class="footer">
     <div class="footer-content">
       <p>&copy; 2025 Natodev. Todos los derechos reservados.</p>
       <p>Contacta con nosotros: <a href="mailto:natodevelop@gmail.com">natodevelop@gmail.com</a></p>
@@ -112,3 +123,4 @@
 
 </body>
 </html>
+
