@@ -101,3 +101,13 @@ main {
   .day.evento {
     background-color: #ffd1d1; /* rosado */
   }
+
+  .day.today {
+    background-color: #ffe082; /* amarillo claro */
+    border: 2px solid #fbc02d;
+  }
+  
+  .day.past {
+    background-color: #e0e0e0; /* gris claro */
+    color: #999;
+  }
